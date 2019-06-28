@@ -2,8 +2,12 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class TouchComp extends cc.Component {
-    private touchFinishedCallback: (_event: cc.Event.EventTouch) => void;
+    private touchable: boolean = true;
+    public SetTouchable(_touchable: boolean) {
+        this.touchable = _touchable;
+    }
 
+    private touchFinishedCallback: (_event: cc.Event.EventTouch) => void;
     public Init(_touchCallback: (_event: cc.Event.EventTouch) => void) {
         this.touchFinishedCallback = _touchCallback;
     }
@@ -41,6 +45,10 @@ export default class TouchComp extends cc.Component {
     private onTouchCancel(event: cc.Event.EventTouch): void {
     }
     private onTouchEnd(event: cc.Event.EventTouch): void {
+        if (this.touchable == false) {
+            return;
+        }
+
         if (this.touchFinishedCallback != null) {
             this.touchFinishedCallback(event);
         }
