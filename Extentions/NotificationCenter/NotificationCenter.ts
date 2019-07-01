@@ -19,23 +19,23 @@ export class NotificationCenter {
      * @param name 
      * @param callback 
      */
-    public on(name: NotificationName, callback: () => void) {
-        this.eventTarget.on(name, callback);
+    public on(name: NotificationName, callback: Function, target?: any) {
+        this.eventTarget.on(name, callback, target);
     }
 
     /**
      * Dispatch a notification
      * @param name 
      */
-    public emit(name: NotificationName) {
-        this.eventTarget.emit(name);
+    public emit(name: NotificationName, arg1?: any, arg2?: any, arg3?: any, arg4?: any, arg5?: any) {
+        this.eventTarget.emit(name, arg1, arg2, arg3, arg4, arg5);
     }
 
     /**
      * Cancel listen
      * @param name 
      */
-    public off(name: NotificationName) {
-        this.eventTarget.off(name);
+    public off(name: NotificationName, callback?: Function, target?: any) {
+        this.eventTarget.off(name, callback, target);
     }
 }
