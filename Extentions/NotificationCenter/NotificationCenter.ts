@@ -1,6 +1,6 @@
 import { NotificationType } from "./NotificationType";
 
- 
+
 
 /**
  * CocosCreator's global Event/Message Center.
@@ -17,9 +17,11 @@ export class NotificationCenter {
     }
 
     /**
-     * Listen to a notification
-     * @param type 
-     * @param callback 
+	 *	注册事件目标的特定事件类型回调。这种类型的事件应该被 `emit` 触发。
+	 *	@param type A string representing the event type to listen for.
+	 *	@param callback The callback that will be invoked when the event is dispatched.
+		                The callback is ignored if it is a duplicate (the callbacks are unique).
+	 *	@param target The target (this object) to invoke the callback, can be null
      */
     public on(type: NotificationType, callback: Function, target?: any) {
         this.eventTarget.on(type, callback, target);
