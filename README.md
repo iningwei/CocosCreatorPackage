@@ -1,5 +1,7 @@
 # CocosCreatorPackage
 
+[中文版](https://github.com/iningwei/CocosCreatorPackage/tree/master/README_CH)
+
 ## NotificationCenter
 This is a global event listen and dispatch solution.
 
