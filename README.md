@@ -31,4 +31,4 @@ It is a solution of endless scrooview,now only support vertical scrollview from 
 So it is only an beta version.
 
 ## Toast
-See [here]("https://github.com/iningwei/ToastForCocosCreator").
+See [here](https://github.com/iningwei/ToastForCocosCreator).
