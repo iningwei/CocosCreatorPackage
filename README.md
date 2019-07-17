@@ -6,7 +6,7 @@ This is a global event listen and dispatch solution.
 Be aware of removing listener when it should be removed.
 
 ## PlayerPrefs
-Oooops,if you are still familiar with Unity3D,you must have used this static class.
+Oooops,if you are still familiar with Unity3D,you must have used this class.
 
 Yes,i just made a local-storage class named PlayerPrefs used Cocos's inner function,which have friendly resolved many complex situations such as browers compatibility.
 
