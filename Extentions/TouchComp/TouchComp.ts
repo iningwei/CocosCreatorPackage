@@ -10,10 +10,13 @@ export default class TouchComp extends cc.Component {
         return this;
     }
 
-    private touchStartCallback: (_event: cc.Event.EventTouch) => void;
-    private touchEndCallback: (_event: cc.Event.EventTouch) => void;
-    private touchMoveCallback: (_event: cc.Event.EventTouch) => void;
-    private touchCancelCallback: (_event: cc.Event.EventTouch) => void;
+    private touchStartCallback: (_event: cc.Event.EventTouch) => void = null;
+    private touchEndCallback: ((_event: cc.Event.EventTouch) => void)[] = [];//可以为一个按钮添加多个点击事件，且会按照添加的顺序依次执行
+    private touchMoveCallback: (_event: cc.Event.EventTouch) => void = null;
+    private touchCancelCallback: (_event: cc.Event.EventTouch) => void = null;
+
+
+
 
     private moveDownThreshold: number = 0;
     private touchMoveDownCallback: (_event: cc.Event.EventTouch) => void;
@@ -27,7 +30,7 @@ export default class TouchComp extends cc.Component {
         return this;
     }
     public SetTouchEndCallback(callback: (_event: cc.Event.EventTouch) => void): TouchComp {
-        this.touchEndCallback = callback;
+        this.touchEndCallback.push(callback);
         return this;
 
     }
@@ -109,8 +112,10 @@ export default class TouchComp extends cc.Component {
                 this.touchMoveDownCallback(event);
             }
         }
-        if (this.touchEndCallback != null) {
-            this.touchEndCallback(event);
+        if (this.touchEndCallback.length != 0) {
+            for (let i = 0; i < this.touchEndCallback.length; i++) {
+                this.touchEndCallback[i](event);
+            }
         }
     }
 }
