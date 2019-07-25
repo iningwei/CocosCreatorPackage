@@ -1,5 +1,5 @@
 # CocosCreatorPackage
-
+IDE version:v2.0.9
 [中文版](https://github.com/iningwei/CocosCreatorPackage/tree/master/README_CH)
 
 ## NotificationCenter
