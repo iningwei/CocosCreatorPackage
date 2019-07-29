@@ -10,40 +10,54 @@ export default class TouchComp extends cc.Component {
         return this;
     }
 
-    private touchStartCallback: (_event: cc.Event.EventTouch) => void = null;
-    private touchEndCallback: ((_event: cc.Event.EventTouch) => void)[] = [];//可以为一个按钮添加多个点击事件，且会按照添加的顺序依次执行
-    private touchMoveCallback: (_event: cc.Event.EventTouch) => void = null;
-    private touchCancelCallback: (_event: cc.Event.EventTouch) => void = null;
-
+    private touchStartCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
+    private touchEndCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
+    private touchMoveCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
+    private touchCancelCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
+    private touchStartParams: any[] = null;
+    private touchEndParams: any[] = null;
+    private touchMoveParams: any[] = null;
+    private touchCancelParams: any[] = null;
 
 
 
     private moveDownThreshold: number = 0;
-    private touchMoveDownCallback: (_event: cc.Event.EventTouch) => void;
+    private touchMoveDownCallback: (_event: cc.Event.EventTouch, params: any[]) => void;
+    private touchMoveDownParams: any[] = null;
 
-    public SetTouchStartCallback(callback: (_event: cc.Event.EventTouch) => void): TouchComp {
+    public SetTouchStartCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
+        ...params: any): TouchComp {
         this.touchStartCallback = callback;
+        this.touchStartParams = params;
         return this;
     }
-    public SetTouchCancelCallback(callback: (_event: cc.Event.EventTouch) => void): TouchComp {
+    public SetTouchCancelCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
+        ...params: any): TouchComp {
         this.touchCancelCallback = callback;
+        this.touchCancelParams = params;
         return this;
     }
-    public SetTouchEndCallback(callback: (_event: cc.Event.EventTouch) => void): TouchComp {
-        this.touchEndCallback.push(callback);
+    public SetTouchEndCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
+        ...params: any): TouchComp {
+        this.touchEndCallback = callback;
+        this.touchEndParams = params;
         return this;
-
     }
-    public SetTouchMoveCallback(callback: (_event: cc.Event.EventTouch) => void): TouchComp {
+    public SetTouchMoveCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
+        ...params: any): TouchComp {
         this.touchMoveCallback = callback;
+        this.touchMoveParams = params;
         return this;
     }
-    public SetTouchMoveDownCallback(threshold: number, callback: (_event: cc.Event.EventTouch) => void): TouchComp {
+    public SetTouchMoveDownCallback(threshold: number,
+        callback: (_event: cc.Event.EventTouch, ...p: any) => void,
+        params: any[] = null): TouchComp {
         if (threshold <= 0) {
             Debug.Error("error, moveDown threshold should >0");
         }
         this.moveDownThreshold = threshold;
         this.touchMoveDownCallback = callback;
+        this.touchMoveDownParams = params;
         return this;
     }
 
@@ -69,7 +83,6 @@ export default class TouchComp extends cc.Component {
         this.node.off(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
     }
 
-
     private touchStartPos: cc.Vec2 = new cc.Vec2(0, 0);
     private onTouchStart(event: cc.Event.EventTouch): void {
         // event.getLocation();//世界坐标
@@ -80,7 +93,7 @@ export default class TouchComp extends cc.Component {
         }
         this.touchStartPos = event.getLocation();
         if (this.touchStartCallback != null) {
-            this.touchStartCallback(event);
+            this.touchStartCallback(event, this.touchStartParams);
         }
     }
     private onTouchMove(event: cc.Event.EventTouch): void {
@@ -88,9 +101,8 @@ export default class TouchComp extends cc.Component {
             return;
         }
         if (this.touchMoveCallback != null) {
-            this.touchMoveCallback(event);
+            this.touchMoveCallback(event, this.touchMoveParams);
         }
-
     }
 
     private onTouchCancel(event: cc.Event.EventTouch): void {
@@ -98,7 +110,7 @@ export default class TouchComp extends cc.Component {
             return;
         }
         if (this.touchCancelCallback != null) {
-            this.touchCancelCallback(event);
+            this.touchCancelCallback(event, this.touchCancelParams);
         }
     }
 
@@ -109,13 +121,11 @@ export default class TouchComp extends cc.Component {
 
         if (this.touchMoveDownCallback != null) {
             if ((this.touchStartPos.y - event.getLocation().y) > this.moveDownThreshold) {
-                this.touchMoveDownCallback(event);
+                this.touchMoveDownCallback(event, this.touchMoveDownParams);
             }
         }
-        if (this.touchEndCallback.length != 0) {
-            for (let i = 0; i < this.touchEndCallback.length; i++) {
-                this.touchEndCallback[i](event);
-            }
+        if (this.touchEndCallback != null) {
+            this.touchEndCallback(event, this.touchEndParams);
         }
     }
 }
