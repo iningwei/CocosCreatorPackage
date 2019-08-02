@@ -1,6 +1,7 @@
 # CocosCreatorPackage
 IDE version:v2.0.9
-[中文版](https://github.com/iningwei/CocosCreatorPackage/tree/master/README_CH)
+
+[中文文档](https://github.com/iningwei/CocosCreatorPackage/tree/master/README_CH)
 
 ## NotificationCenter
 This is a global event listen and dispatch solution.
@@ -34,3 +35,6 @@ So it is only an beta version.
 
 ## Toast
 See [here](https://github.com/iningwei/ToastForCocosCreator).
+
+## DragonBone
+You can play DragonBone animation and listen the animation events by this solution.
