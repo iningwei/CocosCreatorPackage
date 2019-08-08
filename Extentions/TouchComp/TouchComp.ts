@@ -10,48 +10,62 @@ export default class TouchComp extends cc.Component {
         return this;
     }
 
-    private touchStartCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
-    private touchEndCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
-    private touchMoveCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
-    private touchCancelCallback: (_event: cc.Event.EventTouch, ...params: any) => void;
+    private touchStartCallback: (_event: cc.Event.EventTouch, ...params: any[]) => void = null;
+    private touchEndCallback: (_event: cc.Event.EventTouch, ...params: any[]) => void = null;
+    private touchMoveCallback: (_event: cc.Event.EventTouch, ...params: any[]) => void = null;
+    private touchCancelCallback: (_event: cc.Event.EventTouch, ...params: any[]) => void = null;
     private touchStartParams: any[] = null;
     private touchEndParams: any[] = null;
     private touchMoveParams: any[] = null;
     private touchCancelParams: any[] = null;
 
 
-
     private moveDownThreshold: number = 0;
-    private touchMoveDownCallback: (_event: cc.Event.EventTouch, params: any[]) => void;
+    private touchMoveDownCallback: (_event: cc.Event.EventTouch, ...params: any[]) => void;
     private touchMoveDownParams: any[] = null;
 
-    public SetTouchStartCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
-        ...params: any): TouchComp {
+    public Clear() {
+        this.touchStartCallback = null;
+        this.touchEndCallback = null;
+        this.touchMoveCallback = null;
+        this.touchCancelCallback = null;
+        this.touchStartParams = null;
+        this.touchEndParams = null;
+        this.touchMoveParams = null;
+        this.touchCancelParams = null;
+
+        this.moveDownThreshold = 0;
+        this.touchMoveDownCallback = null;
+        this.touchMoveDownParams = null;
+        return this;
+    }
+    public SetTouchStartCallback(callback: (_event: cc.Event.EventTouch, ...p: any[]) => void,
+        ...params: any[]): TouchComp {
         this.touchStartCallback = callback;
         this.touchStartParams = params;
         return this;
     }
-    public SetTouchCancelCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
-        ...params: any): TouchComp {
+    public SetTouchCancelCallback(callback: (_event: cc.Event.EventTouch, ...p: any[]) => void,
+        ...params: any[]): TouchComp {
         this.touchCancelCallback = callback;
         this.touchCancelParams = params;
         return this;
     }
-    public SetTouchEndCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
-        ...params: any): TouchComp {
+    public SetTouchEndCallback(callback: (_event: cc.Event.EventTouch, ...p: any[]) => void,
+        ...params: any[]): TouchComp {
         this.touchEndCallback = callback;
         this.touchEndParams = params;
         return this;
     }
-    public SetTouchMoveCallback(callback: (_event: cc.Event.EventTouch, ...p: any) => void,
-        ...params: any): TouchComp {
+    public SetTouchMoveCallback(callback: (_event: cc.Event.EventTouch, ...p: any[]) => void,
+        ...params: any[]): TouchComp {
         this.touchMoveCallback = callback;
         this.touchMoveParams = params;
         return this;
     }
     public SetTouchMoveDownCallback(threshold: number,
         callback: (_event: cc.Event.EventTouch, ...p: any) => void,
-        params: any[] = null): TouchComp {
+        ...params: any[]): TouchComp {
         if (threshold <= 0) {
             Debug.Error("error, moveDown threshold should >0");
         }
@@ -93,7 +107,7 @@ export default class TouchComp extends cc.Component {
         }
         this.touchStartPos = event.getLocation();
         if (this.touchStartCallback != null) {
-            this.touchStartCallback(event, this.touchStartParams);
+            this.touchStartCallback(event, ...this.touchStartParams);
         }
     }
     private onTouchMove(event: cc.Event.EventTouch): void {
@@ -101,7 +115,7 @@ export default class TouchComp extends cc.Component {
             return;
         }
         if (this.touchMoveCallback != null) {
-            this.touchMoveCallback(event, this.touchMoveParams);
+            this.touchMoveCallback(event, ...this.touchMoveParams);
         }
     }
 
@@ -110,7 +124,7 @@ export default class TouchComp extends cc.Component {
             return;
         }
         if (this.touchCancelCallback != null) {
-            this.touchCancelCallback(event, this.touchCancelParams);
+            this.touchCancelCallback(event, ...this.touchCancelParams);
         }
     }
 
@@ -121,11 +135,12 @@ export default class TouchComp extends cc.Component {
 
         if (this.touchMoveDownCallback != null) {
             if ((this.touchStartPos.y - event.getLocation().y) > this.moveDownThreshold) {
-                this.touchMoveDownCallback(event, this.touchMoveDownParams);
+                this.touchMoveDownCallback(event, ...this.touchMoveDownParams);
             }
         }
         if (this.touchEndCallback != null) {
-            this.touchEndCallback(event, this.touchEndParams);
+            //this.touchEndCallback(event, this.touchEndParams);//未按照省略参数的形式传参， 运行可能达不到效果
+            this.touchEndCallback(event, ...this.touchEndParams);//定义的是 省略参数的形式。 故这里传参，也要用省略参数的形式。 
         }
     }
 }
