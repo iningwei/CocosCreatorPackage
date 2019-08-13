@@ -9,6 +9,9 @@ export class PlayerPrefs {
         cc.sys.localStorage.setItem(key, value);
     }
     public static Get(key: KeyName): any {
+		//需要注意：
+		//在pc浏览器或者手机浏览器上，没有key对应的item的时候，会返回undefined
+		//但是在微信小游戏中会返回空字符串
         return cc.sys.localStorage.getItem(key);
     }
 
