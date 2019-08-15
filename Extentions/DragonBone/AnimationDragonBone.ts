@@ -19,8 +19,6 @@ export default class AnimationDragonBone {
         else {
             Debug.Error("display is null or undefined");
         }
-
-
     }
 
     public GetArmature(): dragonBones.Armature {
@@ -63,7 +61,7 @@ export default class AnimationDragonBone {
     public FadeIn(animationName: string, fadeInTime?: number, playTimes?: number, layer?: number, group?: string | null, fadeOutMode?: dragonBones.AnimationFadeOutMode): dragonBones.AnimationState | null {
         if (this.armatureDisplay == null || this.armatureDisplay == undefined) {
             Debug.Warn("no armatureDisplay, can not play animation:" + animationName);
-            return;
+            return null;
         }
 
         if (this.armature.animation.hasAnimation(animationName)) {
@@ -119,7 +117,7 @@ export default class AnimationDragonBone {
         for (let i = 0; i < this.eventDatas.length; i++) {
             const element = this.eventDatas[i];
             if (element.animationName === event.animationState.name && element.eventType === event.type) {
-                Debug.Warn("触发！！  监听 animationName: " + element.animationName + ", eventType:" + element.eventType + ", nodeName" + this.armatureDisplay.node.name);
+                // Debug.Warn("触发！！  监听 animationName: " + element.animationName + ", eventType:" + element.eventType + ", nodeName" + this.armatureDisplay.node.name);
                 element.callBack();
 
                 //调用后，即移除
@@ -131,7 +129,7 @@ export default class AnimationDragonBone {
         for (let i = 0; i < this.eventDatas.length; i++) {
             const element = this.eventDatas[i];
             if (element.animationName === event.name && element.eventType === event.type) {
-                Debug.Warn("触发！！ 帧事件 监听 :   " + this.armatureDisplay.node.name);
+                // Debug.Warn("触发！！ 帧事件 监听 :   " + this.armatureDisplay.node.name);
                 element.callBack();
 
                 //调用后，即移除
@@ -148,7 +146,7 @@ export default class AnimationDragonBone {
     public RemoveAnimationAndEventListen(animationName: string, eventType: string) {
         for (let i = this.eventDatas.length - 1; i >= 0; i--) {
             const element = this.eventDatas[i];
-            if (element.eventType == eventType && element.animationName == animationName) {
+            if (element.eventType === eventType && element.animationName === animationName) {
                 // Debug.Warn("移除attack监听 :   " + this.armatureDisplay.node.name);
                 this.eventDatas.splice(i, 1);
             }
@@ -166,13 +164,13 @@ export default class AnimationDragonBone {
 
         for (let i = this.eventDatas.length - 1; i >= 0; i--) {
             const element = this.eventDatas[i];
-            if (element.eventType == eventType) {
+            if (element.eventType === eventType) {
                 this.eventDatas.splice(i, 1);
             }
         }
         for (let j = this.eventTypes.length - 1; j >= 0; j--) {
             const element = this.eventTypes[j];
-            if (element == eventType) {
+            if (element === eventType) {
                 this.eventTypes.splice(j, 1);
             }
         }
