@@ -1,4 +1,6 @@
-import Debug from "./TSPackage/Debug";
+import Debug from "../../TSTools/Debug/Debug";
+
+
 
 
 /**
@@ -48,6 +50,16 @@ export default class AnimationDragonBone {
         }
     }
 
+
+    /**
+     * - 暂停指定动画状态的播放。
+     * @param animationName - 动画状态名称。 （如果未设置，则暂停所有动画） 
+     */
+    public Stop(animationName?: string) {
+        this.armature.animation.stop(animationName);
+    }
+
+
     /**
      * 
      * @param animationName - 动画数据名称。
@@ -77,7 +89,7 @@ export default class AnimationDragonBone {
     }
 
     //所有的事件数据
-    private eventDatas: { animationName: string, eventType: string, callBack: () => void }[] = [];
+    private eventDatas: { animationName: string, eventType: string, callBack: () => void, autoRelease: boolean }[] = [];
     //所有的事件类型(要保证唯一性)
     private eventTypes: string[] = [];
 
@@ -88,9 +100,9 @@ export default class AnimationDragonBone {
      * @param eventType 类型，如：dragonBones.EventObject.COMPLETE ；dragonBones.EventObject.FRAME_EVENT
      * @param callBack 
      */
-    public AddEventListener(animationName: string, eventType: string, callBack: () => void) {
+    public AddEventListener(animationName: string, eventType: string, callBack: () => void, autoRelease: boolean = true) {
         if (!this.existEventData(animationName, eventType)) {
-            this.eventDatas.push({ animationName, eventType, callBack });
+            this.eventDatas.push({ animationName, eventType, callBack, autoRelease });
         }
 
         if (this.eventTypes.indexOf(eventType) == -1) {
@@ -119,9 +131,9 @@ export default class AnimationDragonBone {
             if (element.animationName === event.animationState.name && element.eventType === event.type) {
                 // Debug.Warn("触发！！  监听 animationName: " + element.animationName + ", eventType:" + element.eventType + ", nodeName" + this.armatureDisplay.node.name);
                 element.callBack();
-
-                //调用后，即移除
-                this.RemoveAnimationAndEventListen(element.animationName, element.eventType);
+                if (element.autoRelease) {//移除
+                    this.RemoveAnimationAndEventListen(element.animationName, element.eventType);
+                }
             }
         }
 
@@ -132,8 +144,9 @@ export default class AnimationDragonBone {
                 // Debug.Warn("触发！！ 帧事件 监听 :   " + this.armatureDisplay.node.name);
                 element.callBack();
 
-                //调用后，即移除
-                this.RemoveAnimationAndEventListen(element.animationName, element.eventType);
+                if (element.autoRelease) {//移除
+                    this.RemoveAnimationAndEventListen(element.animationName, element.eventType);
+                }
             }
         }
     }
@@ -176,7 +189,6 @@ export default class AnimationDragonBone {
         }
     }
 
-    //TODO:测试多个动作绑定一个listener的情况
     public Destroy(): void {
         if (this.armatureDisplay != null && this.armatureDisplay != undefined) {
             for (let i = this.eventTypes.length - 1; i >= 0; i--) {
